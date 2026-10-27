@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ animal['nombre'] }} | Animalesco{% endblock %}
+
+{% block content %}
+
+<section class="detail-page container">
+    <a class="back-link" href="{{ url_for('index') }}">
+        ← Volver al catálogo
+    </a>
+
+    <div class="detail-hero">
+        <div class="detail-image">
+            {% if animal['imagen_url'] %}
+                <img
+                    src="{{ animal['imagen_url'] }}"
+                    alt="{{ animal['nombre'] }}"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+                >
+            {% endif %}
+
+            <div class="image-placeholder"
+                 {% if animal['imagen_url'] %}
+                 style="display:none"
+                 {% endif %}>
+                <span>✳</span>
+                <span>Fotografía no disponible</span>
+            </div>
+        </div>
+
+        <div class="detail-copy">
+            <span class="eyebrow">
+                FICHA DEL ANIMAL #{{ animal['id'] }}
+            </span>
+
+            <span class="animal-species">{{ animal['especie'] }}</span>
+
+            <h1>{{ animal['nombre'] }}</h1>
+
+            <p class="detail-description">
+                {{ animal['descripcion'] or
+                   'Este animal forma parte de los habitantes registrados en nuestro zoológico.' }}
+            </p>
+
+            <div class="detail-actions">
+                <a class="button"
+                   href="{{ url_for('editar', id=animal['id']) }}">
+                    Editar información
+                </a>
+
+                <form
+                    action="{{ url_for('eliminar', id=animal['id']) }}"
+                    method="POST"
+                    data-confirm="¿Seguro que deseas eliminar a {{ animal['nombre'] }}?">
+                    <button class="button button-danger" type="submit">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="detail-info">
+        <span class="eyebrow">CONOCE MÁS</span>
+        <h2>Información del animal</h2>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <span>Especie</span>
+                <strong>{{ animal['especie'] }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Color</span>
+                <strong>{{ animal['color'] }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Edad</span>
+                <strong>
+                    {% if animal['edad'] is not none %}
+                        {{ animal['edad'] }} años
+                    {% else %}
+                        No especificada
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span>Sexo</span>
+                <strong>{{ animal['sexo'] or 'No especificado' }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Hábitat</span>
+                <strong>{{ animal['habitat'] or 'No especificado' }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Color registrado</span>
+                <strong>{{ animal['color'] }}</strong>
+            </div>
+        </div>
+    </section>
+
+    {% if video_embed or video_directo or animal['video_url'] %}
+        <section class="detail-video">
+            <span class="eyebrow">EN VIDEO</span>
+            <h2>Descubre a {{ animal['nombre'] }}</h2>
+
+            {% if video_embed %}
+                <div class="video-frame">
+                    <iframe
+                        src="{{ video_embed }}"
+                        title="Video de {{ animal['nombre'] }}"
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            {% elif video_directo %}
+                <video class="direct-video" controls preload="metadata">
+                    <source src="{{ video_directo }}">
+                    Tu navegador no puede reproducir este video.
+                </video>
+            {% else %}
+                <p>
+                    El enlace guardado no se puede insertar automáticamente.
+                </p>
+                <a class="text-link"
+                   href="{{ animal['video_url'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Abrir video en otra página ↗
+                </a>
+            {% endif %}
+        </section>
+    {% endif %}
+</section>
+
+{% endblock %}

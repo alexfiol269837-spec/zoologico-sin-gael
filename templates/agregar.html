@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar animal | Animalesco{% endblock %}
+
+{% block content %}
+
+<section class="form-page container">
+    <a class="back-link" href="{{ url_for('index') }}">
+        ← Volver al catálogo
+    </a>
+
+    <div class="form-layout">
+        <div class="form-intro">
+            <span class="eyebrow">NUEVO REGISTRO</span>
+            <h1>Un nuevo habitante.</h1>
+            <p>
+                Agrega la información del animal y una fotografía
+                para que forme parte del catálogo.
+            </p>
+
+            <div class="form-note">
+                <span>✳</span>
+                <p>Los campos marcados con * son obligatorios.</p>
+            </div>
+        </div>
+
+        <form class="animal-form"
+              action="{{ url_for('agregar') }}"
+              method="POST">
+
+            <div class="form-section-title">
+                <span>01</span>
+                <h2>Información básica</h2>
+            </div>
+
+            <div class="field">
+                <label for="nombre">Nombre *</label>
+                <input id="nombre" name="nombre"
+                       maxlength="100" required>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="especie">Especie *</label>
+                    <input id="especie" name="especie"
+                           maxlength="100" required>
+                </div>
+
+                <div class="field">
+                    <label for="color">Color *</label>
+                    <input id="color" name="color"
+                           maxlength="50" required>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="edad">Edad</label>
+                    <input id="edad" name="edad"
+                           type="number" min="0" max="1000">
+                </div>
+
+                <div class="field">
+                    <label for="sexo">Sexo</label>
+                    <select id="sexo" name="sexo">
+                        <option value="">Sin especificar</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                        <option value="Desconocido">Desconocido</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="habitat">Hábitat o recinto</label>
+                <input id="habitat" name="habitat"
+                       maxlength="150"
+                       placeholder="Ej. Sabana">
+            </div>
+
+            <div class="field">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion"
+                          name="descripcion"
+                          rows="4"
+                          placeholder="Cuéntanos algo sobre este animal..."></textarea>
+            </div>
+
+            <div class="form-section-title">
+                <span>02</span>
+                <h2>Contenido visual</h2>
+            </div>
+
+            <div class="field">
+                <label for="imagen_url">URL de la fotografía</label>
+                <input id="imagen_url"
+                       name="imagen_url"
+                       type="url"
+                       maxlength="2000"
+                       placeholder="https://ejemplo.com/animal.jpg"
+                       data-image-url>
+
+                <p class="field-help">
+                    Pega un enlace directo a una imagen pública.
+                </p>
+
+                <div class="preview-box" data-image-preview hidden>
+                    <img src="" alt="Vista previa de la fotografía">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="video_url">URL del video</label>
+                <input id="video_url"
+                       name="video_url"
+                       type="url"
+                       maxlength="2000"
+                       placeholder="https://www.youtube.com/watch?v=...">
+
+                <p class="field-help">
+                    Opcional. Se admiten enlaces de YouTube y videos
+                    directos compatibles.
+                </p>
+            </div>
+
+            <div class="form-actions">
+                <a class="button button-outline"
+                   href="{{ url_for('index') }}">
+                    Cancelar
+                </a>
+
+                <button class="button" type="submit">
+                    Guardar animal
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#f6f8f3">
+    <title>{% block title %}Zoológico Animalesco{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"
+            defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-icon">✳</span>
+                <span>Animalesco</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}">Inicio</a>
+                <a href="{{ url_for('index') }}#animales">Animales</a>
+                <a class="button button-small"
+                   href="{{ url_for('agregar') }}">
+                    + Agregar animal
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container flash-container">
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% for categoria, mensaje in mensajes %}
+                    <div class="flash flash-{{ categoria }}"
+                         role="status">
+                        {{ mensaje }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-icon">✳</span>
+                <span>Animalesco</span>
+            </a>
+            <p>Un espacio para conocer y cuidar la vida silvestre.</p>
+        </div>
+    </footer>
+</body>
+</html>

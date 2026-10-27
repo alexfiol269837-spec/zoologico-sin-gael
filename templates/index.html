@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio | Zoológico Animalesco{% endblock %}
+
+{% block content %}
+
+<section class="hero container">
+    <div class="hero-copy">
+        <span class="eyebrow">NATURALEZA · VIDA · DESCUBRIMIENTO</span>
+
+        <h1>Un mundo lleno de vida.</h1>
+
+        <p>
+            Conoce a los habitantes de nuestro zoológico y descubre
+            lo especial que hace a cada especie.
+        </p>
+
+        <div class="hero-actions">
+            <a class="button"
+               href="#animales">
+                Explorar animales
+            </a>
+
+            <a class="button button-outline"
+               href="{{ url_for('agregar') }}">
+                Registrar animal
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-image-wrap">
+        <img
+            class="hero-image"
+            src="https://tse4.mm.bing.net/th/id/OIP.Ci6dgzQSB-8jPAyDUPnkzwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+            alt="Los animales en su entorono natural"
+            onerror="this.style.display='none';"
+        >
+        <div class="hero-image-caption">
+            <span>La naturaleza nos conecta</span>
+            <span class="caption-dot">●</span>
+        </div>
+    </div>
+</section>
+
+<section class="stats container">
+    <div class="stat-item">
+        <span class="stat-number">{{ animales|length }}</span>
+        <span class="stat-label">
+            {% if busqueda %}Resultados{% else %}Animales registrados{% endif %}
+        </span>
+    </div>
+
+    <div class="stat-item">
+        <span class="stat-symbol">↗</span>
+        <span class="stat-label">Conoce cada especie</span>
+    </div>
+
+    <div class="stat-item">
+        <span class="stat-symbol">✳</span>
+        <span class="stat-label">Descubre la naturaleza</span>
+    </div>
+</section>
+
+<section class="catalog-section container" id="animales">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">NUESTROS HABITANTES</span>
+            <h2>Conoce a los animales</h2>
+            <p>Explora sus historias y conoce más sobre cada uno.</p>
+        </div>
+
+        <a class="text-link" href="{{ url_for('agregar') }}">
+            + Nuevo registro
+        </a>
+    </div>
+
+    <form class="search-form"
+          action="{{ url_for('index') }}"
+          method="GET">
+        <label class="sr-only" for="busqueda">
+            Buscar por nombre o especie
+        </label>
+
+        <input
+            id="busqueda"
+            type="search"
+            name="q"
+            value="{{ busqueda }}"
+            placeholder="Buscar por nombre o especie..."
+        >
+
+        <button class="button" type="submit">Buscar</button>
+
+        {% if busqueda %}
+            <a class="button button-outline"
+               href="{{ url_for('index') }}">
+                Limpiar
+            </a>
+        {% endif %}
+    </form>
+
+    {% if animales %}
+        <div class="animal-grid">
+            {% for animal in animales %}
+                <article class="animal-card">
+                    <a class="animal-card-image"
+                       href="{{ url_for('detalle', id=animal['id']) }}"
+                       aria-label="Ver detalles de {{ animal['nombre'] }}">
+
+                        {% if animal['imagen_url'] %}
+                            <img
+                                src="{{ animal['imagen_url'] }}"
+                                alt="{{ animal['nombre'] }} - {{ animal['especie'] }}"
+                                loading="lazy"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+                            >
+                        {% endif %}
+
+                        <div class="image-placeholder"
+                             {% if animal['imagen_url'] %}
+                             style="display:none"
+                             {% endif %}>
+                            <span>✳</span>
+                            <span>Fotografía no disponible</span>
+                        </div>
+                    </a>
+
+                    <div class="animal-card-content">
+                        <div class="animal-card-heading">
+                            <div>
+                                <span class="animal-species">
+                                    {{ animal['especie'] }}
+                                </span>
+
+                                <h3>{{ animal['nombre'] }}</h3>
+                            </div>
+
+                            <span class="animal-number">
+                                #{{ animal['id'] }}
+                            </span>
+                        </div>
+
+                        {% if animal['habitat'] %}
+                            <p class="animal-habitat">
+                                <span>⌖</span>
+                                {{ animal['habitat'] }}
+                            </p>
+                        {% endif %}
+
+                        <p class="animal-description">
+                            {{ animal['descripcion'] or
+                               'Conoce más sobre este habitante del zoológico.' }}
+                        </p>
+
+                        <div class="card-actions">
+                            <a class="button button-small"
+                               href="{{ url_for('detalle', id=animal['id']) }}">
+                                Ver detalles
+                            </a>
+
+                            <a class="icon-link"
+                               href="{{ url_for('editar', id=animal['id']) }}"
+                               aria-label="Editar {{ animal['nombre'] }}">
+                                Editar
+                            </a>
+
+                            <form
+                                action="{{ url_for('eliminar', id=animal['id']) }}"
+                                method="POST"
+                                data-confirm="¿Seguro que deseas eliminar a {{ animal['nombre'] }}?">
+                                <button class="text-danger"
+                                        type="submit">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">✳</span>
+            <h3>No encontramos animales</h3>
+            <p>
+                {% if busqueda %}
+                    Prueba con otro nombre o especie.
+                {% else %}
+                    Comienza agregando el primer habitante.
+                {% endif %}
+            </p>
+
+            <a class="button" href="{{ url_for('agregar') }}">
+                Agregar animal
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}
